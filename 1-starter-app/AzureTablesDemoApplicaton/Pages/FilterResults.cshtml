@@ -33,84 +33,21 @@
     
     <div class="row g-3 mb-2 justify-content-center">
         <div class="col-md-3 fw-bold">
-            Station Name (Partition Key)
+            Host Name (Partition Key)
         </div>
         <div class="col-md-4 offset-md-2 text-end">
-            <input type="text" id="partitionKeyFilter" name="partitionKey" class="form-control" placeholder="Station name">
+            <input type="text" id="partitionKeyFilter" name="partitionKey" class="form-control" placeholder="Host Name">
         </div>
     </div>
     
     <div class="row g-3 mb-2 justify-content-center">
         <div class="col-md-3 fw-bold">
-            Date (Row Key)
+            Domain Name (Row Key)
         </div>
-        <div class="col-md-2">
-            Min date/time:
-        </div>
-        <div class="col-md-2 text-end">
-            <input type="date" id="rowKeyDateStart" name="rowKeyDateStart" class="form-control">
-        </div>
-        <div class="col-md-2 text-end">
-            <input type="time" id="rowKeyTimeStart" name="rowKeyTimeStart" class="form-control">                            
-        </div>
+		<div class="col-md-4 offset-md-2 text-end">
+			<input type="text" id="rowKeyFilter" name="rowKey" class="form-control" placeholder="Domain Name">
+		</div>
     </div>
-    
-    <div class="row g-3 mb-2 justify-content-center">
-        <div class="col-md-2 offset-md-3">
-            Max date/time:
-        </div>
-        <div class="col-md-2 text-end">
-            <input type="date" id="rowKeyDateEnd" name="rowKeyDateEnd" class="form-control">
-        </div>
-        <div class="col-md-2 text-end">
-            <input type="time" id="rowKeyTimeEnd" name="rowKeyTimeEnd" class="form-control">
-        </div>
-    
-    
-    </div>
-    
-    <div class="row g-3 mb-2 justify-content-center">
-        <div class="col-md-3 fw-bold">
-            Temperature
-        </div>
-        <div class="col-md-2">
-            Min temperature:
-        </div>
-        <div class="col-md-4 text-end">
-            <input type="text" id="minTemperature" name="minTemperature" class="form-control" placeholder="Min temperature">
-        </div>
-    </div>
-    
-    <div class="row g-3 mb-2 justify-content-center">
-        <div class="col-md-2 offset-md-3">
-            Max temperature:
-        </div>
-        <div class="col-md-4 text-end">
-            <input type="text" id="maxTemperature" name="maxTemperature" class="form-control" placeholder="Max temperature">
-        </div>
-    </div>
-    
-    <div class="row g-3 mb-2 justify-content-center">
-        <div class="col-md-3 fw-bold">
-            Precipitation
-        </div>
-        <div class="col-md-2">
-            Min precipitation:
-        </div>
-        <div class="col-md-4 text-end">
-            <input type="text" id="minPrecipitation" name="minPrecipitation" class="form-control" placeholder="Min precipitation">
-        </div>
-    </div>
-    
-    <div class="row g-3 mb-2 justify-content-center">
-        <div class="col-md-2 offset-md-3">
-            Max precipitation:
-        </div>
-        <div class="col-md-4 text-end">
-            <input type="text" id="maxPrecipitation" name="maxPrecipitation" class="form-control" placeholder="Max precipitation">
-        </div>
-    </div>
-    
     <div class="row g-3 mb-2 justify-content-center">
         <div class="col-md-4 offset-md-5 text-end">
             <button type="submit" class="btn btn-success">Filter data</button>
@@ -120,12 +57,12 @@
 
 <hr />
 
-<h3>Weather Data</h3> 
+<h3>Domain Data</h3> 
 <table class="table table-sm mb-1">
     <thead>
         <tr>
-            <th>Station Name</th>
-            <th>Observation Date</th>
+            <th>Host Name</th>
+            <th>Domain Name</th>
             @foreach (var columnName in Model.ColumnNames)
             {
                 <th>@columnName</th>
@@ -133,12 +70,12 @@
         </tr>
     </thead>
 
-@foreach( dynamic item in Model.WeatherObservations)
+@foreach( dynamic item in Model.DomainObservations)
 {
 
     <tr>
-        <td>@item.StationName</td>
-        <td>@item.ObservationDate</td>
+        <td>@item.HostName</td>
+        <td>@item.DomainName</td>
         @foreach (var column in Model.ColumnNames)
         {
             <td>@item[column]</td>

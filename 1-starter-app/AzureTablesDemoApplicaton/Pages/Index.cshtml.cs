@@ -18,7 +18,7 @@ namespace AzureTablesDemoApplication.Pages
         private TablesService _tablesService;
 
 
-        public string[] EXCLUDE_FORM_KEYS = { "stationName", "observationDate", "observationTime", "etag", "__RequestVerificationToken" };
+        public string[] EXCLUDE_FORM_KEYS = { "hostName", "domainName", "etag", "__RequestVerificationToken" };
 
 
         public IndexModel(ILogger<IndexModel> logger, TablesService tablesService)
@@ -29,93 +29,42 @@ namespace AzureTablesDemoApplication.Pages
 
 
         public IEnumerable<string> FieldNames { get; set; }
-        public IEnumerable<WeatherDataModel> WeatherObservations { get; set; }
+        public IEnumerable<DomainDataModel> DomainObservations { get; set; }
 
 
         public void OnGet()
         {
-            WeatherObservations = _tablesService.GetAllRows();
+            DomainObservations = _tablesService.GetAllRows();
 
-            FieldNames = WeatherObservations.SelectMany(e => e.PropertyNames).Distinct();           
+            FieldNames = DomainObservations.SelectMany(e => e.PropertyNames).Distinct();           
         }
 
 
-        public IActionResult OnPostInsertTableEntity(WeatherInputModel model)
+        public IActionResult OnPostInsertTableEntity(DomainInputModel model)
         {
             _tablesService.InsertTableEntity(model);
 
             return RedirectToPage("index", "Get");
         }
 
-        public IActionResult OnPostUpsertTableEntity(WeatherInputModel model)
+        public IActionResult OnPostUpsertTableEntity(DomainInputModel model)
         {
             _tablesService.UpsertTableEntity(model);
 
             return RedirectToPage("index", "Get");
         }
 
-
-        public IActionResult OnPostInsertExpandableData(ExpandableWeatherInputModel model)
+        public IActionResult OnPostRemoveEntity(string hostName, string domainName)
         {
-            ExpandableWeatherObject weatherObject = new ExpandableWeatherObject();
-            weatherObject.StationName = model.StationName;
-            weatherObject.ObservationDate = $"{model.ObservationDate} {model.ObservationTime}";
-
-            // The rest of the properties and values are in the form.  But we want to exclude the elements we
-            // already have from the model and the __RequestVerificationToken when we build our dictionary
-            var propertyNames = Request.Form.Keys.Where(key => !EXCLUDE_FORM_KEYS.Contains(key));
-            foreach (string name in propertyNames)
-            {
-                string value = Request.Form[name].First();
-
-                if (Double.TryParse(value, out double number))
-                    weatherObject[name] = number;
-                else
-                    weatherObject[name] = value;
-            }
-
-            _tablesService.InsertExpandableData(weatherObject);
+            _tablesService.RemoveEntity(hostName, domainName);
 
             return RedirectToPage("index", "Get");
         }
 
 
-        public IActionResult OnPostUpsertExpandableData(ExpandableWeatherInputModel model)
+        public IActionResult OnPostInsertSampleData()
         {
-            ExpandableWeatherObject weatherObject = new ExpandableWeatherObject();
-            weatherObject.StationName = model.StationName;
-            weatherObject.ObservationDate = $"{model.ObservationDate} {model.ObservationTime}";
-
-            // The rest of the properties and values are in the form.  But we want to exclude the elements we
-            // already have from the model and the __RequestVerificationToken when we build our dictionary
-            var propertyNames = Request.Form.Keys.Where(key => !EXCLUDE_FORM_KEYS.Contains(key));
-            foreach (string name in propertyNames)
-            {
-                string value = Request.Form[name].First();
-
-                if (Double.TryParse(value, out double number))
-                    weatherObject[name] = number;
-                else
-                    weatherObject[name] = value;
-            }
-
-            _tablesService.UpsertExpandableData(weatherObject);
-
-            return RedirectToPage("index", "Get");
-        }
-
-
-        public IActionResult OnPostRemoveEntity(string stationName, string observationDate)
-        {
-            _tablesService.RemoveEntity(stationName, observationDate);            
-
-            return RedirectToPage("index", "Get");
-        }
-
-
-        public IActionResult OnPostInsertSampleData(string units, string city)
-        {
-            var bulkData = SampleWeatherData.GetSampleData(units, city);
+            var bulkData = SampleDomainData.GetSampleData();
 
             foreach (var item in bulkData)
                 _tablesService.UpsertTableEntity(item);
@@ -124,12 +73,12 @@ namespace AzureTablesDemoApplication.Pages
         }
 
 
-        public IActionResult OnPostUpdateEntity(string stationName, string observationDate, string etag)
+        public IActionResult OnPostUpdateEntity(string hostName, string domainName, string etag)
         {
-            UpdateWeatherObject weatherObject = new UpdateWeatherObject();
-            weatherObject.StationName = stationName;
-            weatherObject.ObservationDate = observationDate;
-            weatherObject.Etag = etag;
+            UpdateDomainObject domainObject = new UpdateDomainObject();
+            domainObject.HostName = hostName;
+            domainObject.DomainName = domainName;
+            domainObject.Etag = etag;
 
             // The rest of the properties and values are in the form.  But we want to exclude the elements we
             // already have from the model and the __RequestVerificationToken when we build our dictionary
@@ -139,12 +88,12 @@ namespace AzureTablesDemoApplication.Pages
                 string value = Request.Form[name].First();
 
                 if (Double.TryParse(value, out double number))
-                    weatherObject[name] = number;
+                    domainObject[name] = number;
                 else
-                    weatherObject[name] = value;
+                    domainObject[name] = value;
             }
 
-            _tablesService.UpdateEntity(weatherObject);
+            _tablesService.UpdateEntity(domainObject);
 
             return RedirectToPage("index", "Get");
         }

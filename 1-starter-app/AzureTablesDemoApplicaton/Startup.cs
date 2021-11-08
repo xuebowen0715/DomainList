@@ -1,3 +1,4 @@
+using Azure.Data.Tables;
 using AzureTablesDemoApplication.Filters;
 using AzureTablesDemoApplication.Services;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,9 @@ namespace AzureTablesDemoApplication
                 {
                     options.Filters.Add(new ValidationFilter());
                 });
+
+            var connectionString = Configuration.GetConnectionString("CosmosTableApi");
+            services.AddSingleton<TableClient>(new TableClient(connectionString, "DomainAllowList"));
 
             services.AddSingleton<TablesService>();
         }

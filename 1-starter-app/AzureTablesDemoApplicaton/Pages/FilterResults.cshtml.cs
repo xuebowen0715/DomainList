@@ -17,7 +17,7 @@ namespace AzureTablesDemoApplication.Pages
         private TablesService _tablesService;
 
         public IEnumerable<string> ColumnNames { get; set; }
-        public IEnumerable<WeatherDataModel> WeatherObservations { get; set; }
+        public IEnumerable<DomainDataModel> DomainObservations { get; set; }
 
 
         public FilterResultsModel(ILogger<FilterResultsModel> logger, TablesService tablesService)
@@ -29,9 +29,9 @@ namespace AzureTablesDemoApplication.Pages
 
         public void OnGet(FilterResultsInputModel inputModel)
         {
-            WeatherObservations = _tablesService.GetFilteredRows(inputModel);
+            DomainObservations = _tablesService.GetFilteredRows(inputModel);
 
-            ColumnNames = WeatherObservations.SelectMany(e => e.PropertyNames).Distinct();
+            ColumnNames = DomainObservations.SelectMany(e => e.PropertyNames).Distinct();
         }
 
 
